@@ -3,18 +3,19 @@
 from db_helper import *
 from msg import *
 
-class CoffeeDao:
-    #构造函数
-    def __init__(self, db_helper):
-        self.db_helper = DBHelper()  #创建DBHelper对象
-        self.db_helper.open_conn()   #打开数据库连接
 
-    #析构函数
-    def __del__(self): 
-        self.db_helper.close_conn()  #关闭数据库连接 
+class CoffeeDao:
+    # 构造函数
+    def __init__(self, db_helper):
+        self.db_helper = DBHelper()  # 创建DBHelper对象
+        self.db_helper.open_conn()  # 打开数据库连接
+
+    # 析构函数
+    def __del__(self):
+        self.db_helper.close_conn()  # 关闭数据库连接
 
     # 新增订单
-    def insert_machine_status(self, msg):  #插入对象
+    def insert_machine_status(self, msg):  # 插入对象
         try:
             sql = '''insert into manage_eqstate(MACHINE_ID,
                     RECV_TIME,
@@ -26,8 +27,8 @@ class CoffeeDao:
                     ORDERS_AMT)
                 values(%s,'%s','%s','%s','%s','%s',%s,%s)
             ''' % (msg.machine_id, msg.recv_time, msg.enviroment_temperature,
-                msg.boiler_temperature,msg.boiler_pressue,msg.material_remainder,
-                msg.orders_num,msg.orders_amt) 
+                   msg.boiler_temperature, msg.boiler_pressue, msg.material_remainder,
+                   msg.orders_num, msg.orders_amt)
 
             print("\nsql:%s\n" % sql)
             result = self.db_helper.do_update(sql)
@@ -38,7 +39,6 @@ class CoffeeDao:
             print("插入设备状态表出错")
             self.db_helper.db_conn.rollback()
             return None
-
 
     # 查询每台设备最后发送数据的时间到当前时间的差值（单位：秒）
     def query_machine_last_send(self):
@@ -60,20 +60,18 @@ class CoffeeDao:
         result = self.db_helper.do_query(sql)
         return result
 
-
     # 查询所有设备状态信息
     def get_all_eqstate(self):
         sql = "select * from manage_eqstate"
         result = self.db_helper.do_query(sql)
         return result
 
-
     # 根据设备编号查询该设备是否有报警信息
     def get_warning_by_machine_id(self, machine_id):
         try:
             sql = '''select * from manage_eqwarning 
                     where machine_id = %d''' % machine_id
-            
+
             print("\nsql:%s\n" % sql)
             result = self.db_helper.do_query(sql)
             return result
@@ -91,7 +89,7 @@ class CoffeeDao:
 
         print(sql)
 
-        try:                
+        try:
             result = self.db_helper.do_update(sql)
             self.db_helper.db_conn.commit()
             print("更新或插入设备警告表成功")
@@ -101,8 +99,7 @@ class CoffeeDao:
             self.db_helper.db_conn.rollback()
             return None
 
-
-    def add_machine_warnings(self, id, msg):  #插入对象
+    def add_machine_warnings(self, id, msg):  # 插入对象
         result = self.get_warning_by_machine_id(id)
         if not result:
             sql = '''insert into manage_eqwarning(id, MACHINE_ID, alter_msg, check_time)   
