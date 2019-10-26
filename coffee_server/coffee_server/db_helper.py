@@ -17,7 +17,7 @@ class DBHelper:
         else:
             print("连接数据库成功")
 
-    def close_conn(self):  # 关闭数据库
+    def close_conn(self):
         try:
             self.db_conn.close()
         except Exception as e:
